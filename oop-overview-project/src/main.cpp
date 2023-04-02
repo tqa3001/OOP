@@ -1,24 +1,66 @@
 #include <iostream>
 #include <vector>
 #include <string> 
+#include <cassert>
 #include "./custom/queue.cpp"
+#define WINDOW_WIDTH 50
 #define MAX_AGE_YOUNG 30
 #define BORROW_LIMIT 20
 using namespace std;
 
+/**
+ * Base class for documents
+*/
 class Document {
 private:
   string Author;
   string Title; 
+protected:  // can be access directly by derived classes 
   int DocumentID; 
 public: 
   Document(string author="", string title="", int id=-1) : Author(author), Title(title), DocumentID(id) {};
   string getAuthor() { return Author; }
   string getTitle() { return Title; } 
   int getID() { return DocumentID; }
+  string getInfo(string data) {
+    data = 
+      "Title: " + getTitle() + "\n" + 
+      "Author: " + getAuthor() + "\n" + 
+      "ID: " + to_string(DocumentID) + "\n\n" +
+      data; 
+    string break_row; 
+    for (int i = 0; i < WINDOW_WIDTH; i++) 
+      break_row += "="; 
+    break_row += "\n"; 
+    string table = break_row + "|"; 
+    int cur = 1; 
+    for (char c : data) {
+      if (c == '\n') {
+        while (cur < WINDOW_WIDTH - 1) {
+          table += " "; 
+          cur++; 
+        }
+        table += "|\n|"; 
+        cur = 1; 
+      } else {
+        if (cur == WINDOW_WIDTH - 1) {
+          table += "|\n|"; 
+          cur = 1; 
+        }
+        table += c; 
+        cur++; 
+      }
+    }
+    while (cur < WINDOW_WIDTH - 1) { table += " "; cur++; }
+    table += "|\n" + break_row; 
+    return table; 
+  }
 };
 
-class Book : Document {
+/**
+ * Book  
+*/
+class Book : public Document {  // keyword public is important
 private: 
   string Summary; 
   vector<pair<string, double> > Reviews; 
@@ -26,9 +68,9 @@ public:
   // Reusing Document's constructor
   Book(string author="", string title="", int id=-1, string summary = "") 
     : Document(author, title, id) 
-    { Summary = summary; }
+      { Summary = summary; }
 
-  // getter 
+  // Getters
   string getSummary() { return Summary; }
 
   double AvgRating() {
@@ -43,47 +85,65 @@ public:
   void addReview(string review, double rating) { Reviews.push_back({review, rating}); }
 
   string getBookInfo() {
-    const int WIDTH = 50; 
     string data = 
-      "Title: " + getTitle() + "\n\n" + 
-      "Author: " + getAuthor() + "\n\n" + 
-      "ID: " + to_string(getID()) + "\n\n" + 
-      "Summary: " + Summary + "\n\n" + 
+      (string) "Type: Paper\n" +
+      "Summary: " + Summary + "\n" + 
       "Average rating: " + to_string(AvgRating()); 
-    string break_row; 
-    for (int i = 0; i < WIDTH; i++) 
-      break_row += "="; 
-    break_row += "\n"; 
-    string table = break_row + "|"; 
-    int cur = 1; 
-    for (char c : data) {
-      if (c == '\n') {
-        while (cur < WIDTH - 1) {
-          table += " "; 
-          cur++; 
-        }
-        table += "|\n|"; 
-        cur = 1; 
-      } else {
-        if (cur == WIDTH - 1) {
-          table += "|\n|"; 
-          cur = 1; 
-        }
-        table += c; 
-        cur++; 
-      }
-    }
-    while (cur < WIDTH - 1) { table += " "; cur++; }
-    table += "|\n" + break_row; 
-    return table; 
+    return getInfo(data); 
   }
 }; 
 
-// Abstraction: hiding complexity behind an interface which is a contract requiring certain methods to 
-// be implemented. 
-// Java has a thing called "interface" which essentially is an abstract class. 
-// So in this example: Another dev who wants to use the Student class only needs to see
-// AbstractStudent -> hides all complexity
+/**
+ * Paper
+ * Assumption: each paper is written by 1 author (not accurate)
+ * Or we can write multiple authors in the author field.
+*/
+class Paper : public Document {
+private: 
+  int Year; 
+  vector<Paper*> References, Responses; 
+  Paper* ParentPaper; 
+public: 
+  Paper(string author="", string title="", int id=-1, 
+    int year=-1, vector<Paper*> refs=vector<Paper*>(), Paper* parent=NULL) 
+    : Document(author, title, id), Year(year), References(refs) {
+        ParentPaper = NULL; 
+        if (parent != NULL) {
+          respondTo(parent); 
+          parent->addToResponses(this); 
+        } 
+      } 
+  int getYear() { return Year; }
+  void addToResponses(Paper* paper) { References.push_back(paper); }
+  void respondTo(Paper* parent) { 
+    assert(ParentPaper == NULL);
+    assert(Year >= parent->getYear()); 
+    (*parent).addToResponses(this); 
+    ParentPaper = parent; 
+  }
+  string shortForm() { return getTitle() + ", " + getAuthor() + ", " + to_string(Year); }
+  Paper* isReponseTo() { return ParentPaper; }
+  string getPaperInfo() {
+    string data = 
+      "Responding to: " + (ParentPaper == NULL ? "None" : ParentPaper->shortForm()) + "\n" + 
+      "References:\n"; 
+    for (auto ref : References) 
+      data += "- " + ref->shortForm() + "\n"; 
+    data += "Responses to this paper:\n"; 
+    for (auto resp : Responses) 
+      data += "- " + resp->shortForm() + "\n"; 
+    return getInfo(data); 
+  }
+}; 
+
+/**
+ * Abstraction: hiding complexity behind an interface which is a contract requiring certain methods to
+ * be implemented. 
+ * Java has a thing called "interface" which essentially is an abstract class. 
+ * So in this example: Another dev who wants to use the Student class only needs to see
+ * AbstractStudent -> hides all complexity
+*/
+
 class AbstractStudent {
   // virtual -> derive class has funct that overrides it
   virtual int addBook(int book_id) = 0; 
@@ -140,4 +200,11 @@ signed main() {
   book1.addReview("Terrible!", 1); 
   cout << "New book info: \n"; 
   cout << book1.getBookInfo() << '\n'; 
+  cout << "I can getAuthor() only because it's public inheritance: " << book1.getAuthor() << '\n'; 
+
+  Paper paper1("Lincoln, A.", "C++ OOP", 1021, 2003); 
+  Paper paper2("Bridge, C.", "Waltuh in 3D systems", 4026, 1992); 
+  Paper paper3("Trinh, Q.", "Why OOP sucks", 7127, 2004, {&paper1, &paper2}, &paper1); 
+  cout << "Quang Trinh's imaginary paper:\n"; 
+  cout << paper3.getPaperInfo(); 
 }

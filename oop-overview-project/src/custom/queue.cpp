@@ -1,5 +1,6 @@
 // For practice using templates + reimplement basic data structures. 
 // Why did I try to compile this lol 
+// std::list or std::vector?? 
 #include <iostream>
 using namespace std;
 
