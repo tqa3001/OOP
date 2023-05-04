@@ -14,11 +14,11 @@ private:
 class WindowMenu : public Window {
 public:
   WindowMenu();
-  void add(char buttonPressed, Window *windowPtr);
+  void add(char buttonPressed, Window &windowPtr);
   void print();
   int run();
 private:
-  std::unordered_map<char, Window*> M;
+  std::unordered_map<char, Window&> M;
 };
 
 class AboutWindow : public Window {

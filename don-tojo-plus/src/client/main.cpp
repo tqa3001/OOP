@@ -8,8 +8,8 @@ void run() {
   WindowMenu menu;
   ViewDishesWindow dishes;
   AboutWindow about;
-  menu.add('1', &dishes);
-  menu.add('2', &about);
+  menu.add('1', dishes);
+  menu.add('2', about);
   menu.print();
   menu.run();
 }

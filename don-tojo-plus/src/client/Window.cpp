@@ -2,13 +2,13 @@
 
 WindowMenu::WindowMenu() {}
 
-void WindowMenu::add(char buttonPressed, Window *windowPtr) {
+void WindowMenu::add(char buttonPressed, Window &windowPtr) {
   M[buttonPressed] = windowPtr;
 }
 
 void WindowMenu::print() {
   for (auto T : M) {
-    std::cout << "[" << T.first << "] - " << T.second->getDescription() << '\n';
+    std::cout << "[" << T.first << "] - " << T.second.getDescription() << '\n';
   }
   std::cout << "[x] - Return/Exit\n";
 }
@@ -21,7 +21,7 @@ int WindowMenu::run() {
   auto pt = M.find(input); 
   if (pt == M.end())
     return -1;
-  (*pt).second->run(); 
+  (*pt).second.run(); 
   return 0; 
 }
 
