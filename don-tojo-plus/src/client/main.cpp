@@ -1,12 +1,17 @@
 #include <iostream>
-#include "./WindowMenu.cpp"
+#include "./Window.h"
 using std::cout;
 
 void run() {
-  cout << "Welcome to the Don Tojo fanclub! Press:\n";
-  cout << "[1] - Don Tojo Menu\n [2] - About\n [x] - Exit\n"; 
-  WindowMenu window;
-  window.add('1', '')
+  cout << "=========================================\n";
+  cout << "Welcome to the Don Tojo fanclub! Press:\n\n";
+  WindowMenu menu;
+  ViewDishesWindow dishes;
+  AboutWindow about;
+  menu.add('1', &dishes);
+  menu.add('2', &about);
+  menu.print();
+  menu.run();
 }
 
 main() {
