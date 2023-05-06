@@ -1,4 +1,5 @@
 #include "Server.h"
+#include <string>
 
 void MessageEmitter::notifySubscribers() {
   for (auto userPtr : subscribers) {
@@ -21,8 +22,13 @@ void MessageEmitter::unsubscribe(User &user) {
 void Server::getInstance() {
   if (serverPtr == nullptr) {
     serverPtr = new Server();
+    serverPtr->startTime = clock() / CLOCKS_PER_SEC;
   }
   return serverPtr;
+}
+
+std::string Server::getStatus() {
+  return "Server started running " + std::to_string(startTime) + "after program start";
 }
 
 void Server::registerNewUser(User user) {

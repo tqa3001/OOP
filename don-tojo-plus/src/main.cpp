@@ -1,8 +1,11 @@
 #include <iostream>
-#include "./Window.h"
+#include "./view/Window.h"
+#include "./model/Server.h"
+#include "./controller/Controller.h"
 using std::cout;
 
 void run() {
+  cout << server.getInstance();
   cout << "=========================================\n";
   cout << "Welcome to the Don Tojo fanclub! Press:\n\n";
   WindowMenu menu;

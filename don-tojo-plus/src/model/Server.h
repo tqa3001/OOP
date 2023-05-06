@@ -30,9 +30,13 @@ public:
   void operator= (Server &server) = delete;     /* Avoid implicit copy assignment */
 
   /* Safer method for getting the instance of Server */
-  Server* getInstance();
+  static Server& getInstance() {
+    static Server instance;  /* lazy initiated and correctly destroyed */
+    return instance;
+  }
 
   /* Methods */
+  std::string getStatus();
   void registerNewUser(User);
   void removeUser(User);
   void addDish(Food);
@@ -41,9 +45,9 @@ public:
 
 private:
   Server() {};
-  static Server* serverPtr;
+  double startTime;
   std::vector<User> mUsers;
   std::unordered_map<Food, int> requestCount; 
   std::set<Food> menuDishes;
   MessageEmitter messageEmitter;
-};
+} server;

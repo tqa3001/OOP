@@ -1,6 +1,7 @@
 {
   "files.associations": {
     "xstring": "cpp",
-    "xlocale": "cpp"
+    "xlocale": "cpp",
+    "string": "cpp"
   }
 }
