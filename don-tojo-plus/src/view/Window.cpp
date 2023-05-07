@@ -62,7 +62,7 @@ ViewDishesWindow::ViewDishesWindow() {
 }
 
 void ViewDishesWindow::render() {
-  std::cout << "Take a look at Don Tojo's delicious menu!\n";
+  std::cout << "Take a look at Don Tojo's delicious menu!\n\n";
   for (auto dish : menu) {
     std::cout << dish.getName() << '\n';
   } // todo: FoodWindow

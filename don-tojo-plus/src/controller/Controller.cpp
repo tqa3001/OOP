@@ -52,7 +52,6 @@ void Controller::prepWindow(Window* window) {
       if (input == "1") {
         AlphebeticalListingStrategy strategy;
         menuWindow->setMenu(Server::getInstance().getMenu(strategy));
-        std::cout << "bruh!\n";
         break;
       } 
       if (input == "2") {

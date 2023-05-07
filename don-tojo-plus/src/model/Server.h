@@ -57,15 +57,15 @@ public:
   std::string getStatus();
   void registerNewUser(User);
   void removeUser(User);
-  void addDish(Food);
+  void addDishes(std::vector<Food> &dishes);
   void removeDish(Food);
   int toggleVote(Food, User);
   std::vector<Food> getMenu(ListingStrategy &strategy);
 
 private:
   Server() : isLoaded(false) {
-    Food temp("Teriyaki Don");
-    addDish(temp);
+    std::vector<Food> confirmedMenu = {Food("Sukiyaki Don"), Food("Teriyaki Don")};
+    addDishes(confirmedMenu);
   };
   bool isLoaded;
   double startTime;

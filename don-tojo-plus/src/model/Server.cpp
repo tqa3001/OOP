@@ -29,14 +29,16 @@ void Server::removeUser(User user) {
   mUsers.erase(user);
 }
 
-void Server::addDish(Food dish) {
-  for (auto tmp : menuDishes) {
-    Food existingDish = tmp.first;
-    if (dish == existingDish) {
-      return;
+void Server::addDishes(std::vector<Food> &dishes) {  /* not optimal */
+  for (auto dish : dishes)  {
+    for (auto tmp : menuDishes) {
+      Food existingDish = tmp.first;
+      if (dish == existingDish) {
+        return;
+      }
     }
-  }
-  menuDishes.push_back({dish, users_t()});
+    menuDishes.push_back({dish, users_t()});
+  }  
 }
 
 void Server::removeDish(Food dish) {
@@ -81,7 +83,7 @@ std::vector<Food> AlphebeticalListingStrategy::apply(std::vector<Food> &dishes) 
 std::vector<Food> ReverseAlphebeticalListingStrategy::apply(std::vector<Food> &dishes) {
   std::vector<Food> ret(dishes);
   std::sort(ret.begin(), ret.end(), [](Food &a, Food &b) { 
-    return a.getName() < b.getName(); 
+    return a.getName() > b.getName(); 
   });
   return ret;
 }
