@@ -15,18 +15,6 @@ void MessageEmitter::unsubscribe(User &user) {
   subscribers.erase(user);
 }
 
-/* Listing strategy pattern implementation */
-
-/* Server singleton class implementation */
-
-void Server::getInstance() {
-  if (serverPtr == nullptr) {
-    serverPtr = new Server();
-    serverPtr->startTime = clock() / CLOCKS_PER_SEC;
-  }
-  return serverPtr;
-}
-
 std::string Server::getStatus() {
   return "Server started running " + std::to_string(startTime) + "after program start";
 }
@@ -40,13 +28,42 @@ void Server::removeUser(User user) {
 }
 
 void Server::addDish(Food dish) {
-  menuDishes.insert(dish);
+  for (auto tmp : menuDishes) {
+    Food existingDish = tmp.first;
+    if (dish == existingDish) {
+      return;
+    }
+  }
+  menuDishes.push_back({dish, users_t()});
 }
 
 void Server::removeDish(Food dish) {
-  menuDishes.erase(dish);
+  for (int i = 0; i < (int)menuDishes.size(); i++) {
+    if (menuDishes[i].first == dish) {
+      menuDishes.erase(menuDishes.begin() + i);
+      return;
+    }
+  }
 }
 
-std::vector<Food> Server::getMenu(ListingStrategy strategy) {
-  return strategy.apply(std::vector<Food>(menuDishes));
+int Server::toggleVote(Food dish, User user) {
+  for (auto& tmp : menuDishes) {
+    if (tmp.first == dish) {
+      if (tmp.second.find(user) != tmp.second.end()) {
+        tmp.second.erase(user);
+        return 0;
+      } else {
+        tmp.second.insert(user);
+        return 1;
+      }
+    }
+  }
+}
+
+std::vector<Food> Server::getMenu(ListingStrategy &strategy) {
+  std::vector<Food> dishes;
+  for (auto &T : menuDishes) {
+    dishes.push_back(T.first);  /* if i'm correct, T is lvalue -> creates new copy */
+  }
+  return strategy.apply(dishes);
 }

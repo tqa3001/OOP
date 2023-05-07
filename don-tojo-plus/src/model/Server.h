@@ -1,7 +1,10 @@
+#pragma once
+#include <vector>
 #include <set>
-#include <unordered_map>
+#include <time.h>
 #include "User.h"
 #include "Food.h"
+typedef std::set<User> users_t;  /* Note: set<T&> is compile error, you can't store refs */
 
 class MessageEmitter {
 public:
@@ -13,11 +16,12 @@ public:
   void unsubscribe(User&);
 private:
   std::string message;
-  std::set<User&> subscribers;
+  users_t subscribers;
 };
 
 class ListingStrategy {
-  virtual void apply(std::vector<Food> &dishes) = 0;
+public:
+  virtual std::vector<Food> apply(std::vector<Food> &dishes) = 0;
 };
 
 class AlphebeticalListingStrategy : public ListingStrategy {};
@@ -32,6 +36,10 @@ public:
   /* Safer method for getting the instance of Server */
   static Server& getInstance() {
     static Server instance;  /* lazy initiated and correctly destroyed */
+    if (!isLoaded) {
+      // startTime = clock() / CLOCKS_PER_SEC;
+      isLoaded = true;
+    }
     return instance;
   }
 
@@ -41,13 +49,18 @@ public:
   void removeUser(User);
   void addDish(Food);
   void removeDish(Food);
+  int toggleVote(Food, User);
   std::vector<Food> getMenu(ListingStrategy &strategy);
 
 private:
   Server() {};
-  double startTime;
-  std::vector<User> mUsers;
-  std::unordered_map<Food, int> requestCount; 
-  std::set<Food> menuDishes;
+  static bool isLoaded;
+  static double startTime;
+  users_t mUsers;
+  std::vector<std::pair<Food, users_t> > menuDishes;
   MessageEmitter messageEmitter;
-} server;
+};
+
+/* Static variables are like global variables that are in the namespace of a class, they need
+  to be defined somewhere. */
+double Server::startTime;  

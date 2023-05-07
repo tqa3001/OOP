@@ -1,3 +1,4 @@
+#pragma once
 #include <iostream>
 #include <vector>
 #include <set>
@@ -5,7 +6,10 @@
 
 class User {
 public:
-  virtual void updateInbox() = 0;
+  void updateInbox(std::string message);
+  bool operator< (const User& oth) const {
+    return username < oth.username;
+  };
 private:
   std::string username;
   std::vector<std::string> inbox;

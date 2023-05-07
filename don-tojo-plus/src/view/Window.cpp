@@ -2,23 +2,38 @@
 
 WindowImpl::WindowImpl() {}
 
-void WindowImpl::addWindow(char input, Window* windowPtr) {
+void WindowImpl::addWindow(std::string input, Window* windowPtr) {
   mNext[input] = windowPtr;
 }
 
-Window* WindowImpl::nextWindow(char input) {
+Window* WindowImpl::nextWindow(std::string input) {
   auto pt = mNext.find(input); 
-  if (pt == mNext.end())
-    nullptr;
+  if (pt == mNext.end()) {
+    return nullptr;
+  }
   return (*pt).second;
 }
 
 void WindowImpl::render() {
+  std::cout << "\nOptions:\n";
   for (auto zipped : mNext) {
-    char option = zipped.first;
+    std::string option = zipped.first;
     Window* window = zipped.second;
     std::cout << "[" << option << "] - " << window->getDescription() << '\n';
   }
+  std::cout << "[x] - Back/Exit\n";
+  std::cout << "\nEnter: ";
+}
+
+StartingWindow::StartingWindow() {
+  addWindow("1", &dishes);
+  addWindow("2", &about);
+}
+
+void StartingWindow::render() {
+  std::cout << "=========================================\n";
+  std::cout << "Welcome to the Don Tojo fanclub!\n";
+  WindowImpl::render();
 }
 
 AboutWindow::AboutWindow() {

@@ -1,10 +1,13 @@
+#pragma once
 #include <iostream>
 
 class Food {
 public:
-  Food();
   std::string getName() { return name; }
   std::string getDescription();
+  bool operator== (const Food& oth) {
+    return name == oth.name;
+  }
 private:
   std::string name;
   std::string rice, noodle;

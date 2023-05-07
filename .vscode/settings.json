@@ -2,6 +2,8 @@
   "files.associations": {
     "xstring": "cpp",
     "xlocale": "cpp",
-    "string": "cpp"
+    "string": "cpp",
+    "set": "cpp",
+    "unordered_map": "cpp"
   }
 }
