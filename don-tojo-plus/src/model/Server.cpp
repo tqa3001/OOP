@@ -1,5 +1,6 @@
 #include "Server.h"
 #include <string>
+#include <algorithm>
 
 void MessageEmitter::notifySubscribers() {
   for (auto userPtr : subscribers) {
@@ -16,7 +17,8 @@ void MessageEmitter::unsubscribe(User &user) {
 }
 
 std::string Server::getStatus() {
-  return "Server started running " + std::to_string(startTime) + "after program start";
+  return "Server is running...\n";
+  // return "Server started running " + std::to_string(startTime) + "after program start";
 }
 
 void Server::registerNewUser(User user) {
@@ -66,4 +68,20 @@ std::vector<Food> Server::getMenu(ListingStrategy &strategy) {
     dishes.push_back(T.first);  /* if i'm correct, T is lvalue -> creates new copy */
   }
   return strategy.apply(dishes);
+}
+
+std::vector<Food> AlphebeticalListingStrategy::apply(std::vector<Food> &dishes) {
+  std::vector<Food> ret(dishes);
+  std::sort(ret.begin(), ret.end(), [](Food &a, Food &b) { 
+    return a.getName() < b.getName(); 
+  });
+  return ret;
+}
+
+std::vector<Food> ReverseAlphebeticalListingStrategy::apply(std::vector<Food> &dishes) {
+  std::vector<Food> ret(dishes);
+  std::sort(ret.begin(), ret.end(), [](Food &a, Food &b) { 
+    return a.getName() < b.getName(); 
+  });
+  return ret;
 }

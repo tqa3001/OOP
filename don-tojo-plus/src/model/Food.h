@@ -3,12 +3,15 @@
 
 class Food {
 public:
+  Food() {}
+  Food(std::string name) : name(name) {}
   std::string getName() { return name; }
   std::string getDescription();
   bool operator== (const Food& oth) {
     return name == oth.name;
   }
 private:
+  double price;
   std::string name;
   std::string rice, noodle;
   std::string meat;

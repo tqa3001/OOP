@@ -24,7 +24,17 @@ public:
   virtual std::vector<Food> apply(std::vector<Food> &dishes) = 0;
 };
 
-class AlphebeticalListingStrategy : public ListingStrategy {};
+class AlphebeticalListingStrategy : public ListingStrategy {
+public:
+  AlphebeticalListingStrategy() {};
+  std::vector<Food> apply(std::vector<Food> &dishes);
+};
+
+class ReverseAlphebeticalListingStrategy : public ListingStrategy {
+public:
+  ReverseAlphebeticalListingStrategy() {};
+  std::vector<Food> apply(std::vector<Food> &dishes);
+};
 
 class Server {
 public:
@@ -36,9 +46,9 @@ public:
   /* Safer method for getting the instance of Server */
   static Server& getInstance() {
     static Server instance;  /* lazy initiated and correctly destroyed */
-    if (!isLoaded) {
-      // startTime = clock() / CLOCKS_PER_SEC;
-      isLoaded = true;
+    if (!instance.isLoaded) {
+      instance.startTime = clock() / CLOCKS_PER_SEC;
+      instance.isLoaded = true;
     }
     return instance;
   }
@@ -53,9 +63,12 @@ public:
   std::vector<Food> getMenu(ListingStrategy &strategy);
 
 private:
-  Server() {};
-  static bool isLoaded;
-  static double startTime;
+  Server() : isLoaded(false) {
+    Food temp("Teriyaki Don");
+    addDish(temp);
+  };
+  bool isLoaded;
+  double startTime;
   users_t mUsers;
   std::vector<std::pair<Food, users_t> > menuDishes;
   MessageEmitter messageEmitter;
@@ -63,4 +76,4 @@ private:
 
 /* Static variables are like global variables that are in the namespace of a class, they need
   to be defined somewhere. */
-double Server::startTime;  
+// double Server::startTime;  

@@ -1,6 +1,8 @@
 #pragma once
 #include <iostream>
+#include <vector>
 #include <unordered_map>
+#include "../model/Food.h"
 
 class Window {
 public:
@@ -31,7 +33,10 @@ public:
 class ViewDishesWindow : public WindowImpl {
 public:
   ViewDishesWindow();
+  void setMenu(std::vector<Food> inputMenu) { menu = inputMenu; }
   void render();
+private:
+  std::vector<Food> menu;
 };
 
 class StartingWindow : public WindowImpl {

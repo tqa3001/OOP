@@ -1,4 +1,5 @@
 #include "Controller.h"
+#include "../model/Server.h"
 #include <string>
 
 Controller::Controller(Window *firstWindow) {
@@ -18,6 +19,7 @@ void Controller::run() {
   std::string input;
   while (true) {
     Window* currentWindow = mWindowStack.back();
+    prepWindow(currentWindow);
     currentWindow->render();
     input = getUserInput();
     if (input == "x") {
@@ -34,4 +36,33 @@ void Controller::run() {
       }
     }
   }
+}
+
+void Controller::prepWindow(Window* window) {
+  std::string windowDescription = window->getDescription();
+  if (windowDescription == "About") {
+    return;
+  }
+  
+  if (windowDescription == "Don Tojo Menu" ) {
+    ViewDishesWindow* menuWindow = dynamic_cast<ViewDishesWindow*>(window);
+    while (true) {
+      std::cout << "Select display order: (1 - sorted, 2 - reverse sorted) ";
+      std::string input = getUserInput();
+      if (input == "1") {
+        AlphebeticalListingStrategy strategy;
+        menuWindow->setMenu(Server::getInstance().getMenu(strategy));
+        std::cout << "bruh!\n";
+        break;
+      } 
+      if (input == "2") {
+        ReverseAlphebeticalListingStrategy strategy;
+        menuWindow->setMenu(Server::getInstance().getMenu(strategy));
+        break;
+      }
+      std::cout << "Invalid input! Please re-enter: ";
+    }
+    return;
+  }
+
 }

@@ -41,7 +41,19 @@ AboutWindow::AboutWindow() {
 }
 
 void AboutWindow::render() {
-  std::cout << "About Page\n";
+  std::cout << "About Page\n\n";
+  std::string para =   
+    "Hello! If you are a Unimelb Parkville student, there's a good chance that you have came across\n"
+    "the famous Japanese restaurant Don Tojo at 164 Cardigan Street, Carlton.\n"
+    "Don and Udon dishes here are not only delicious but also very affordable,\n"
+    "making it the perfect lunch and dinner option for us dirt poor students with crippling tuition debt!\n\n"
+    "One special feature of Don Tojo is that the entire menu with ~30 dishes can be \n"
+    "formed from a small set of ingredients, which inevitably leads to these questions:\n"
+    "What's the maximum number of Don/Udon dishes can Don Tojo make?\n"
+    "Among those dishes, how many of them are culinary masterpieces?\n"
+    "And how many of them are messes of ingredients that don't match?\n\n"
+    "This small program is the first step towards tackling this million-dollar problem.";
+  std::cout << para << '\n';
   WindowImpl::render();
 }
 
@@ -51,5 +63,8 @@ ViewDishesWindow::ViewDishesWindow() {
 
 void ViewDishesWindow::render() {
   std::cout << "Take a look at Don Tojo's delicious menu!\n";
+  for (auto dish : menu) {
+    std::cout << dish.getName() << '\n';
+  } // todo: FoodWindow
   WindowImpl::render();
 }
