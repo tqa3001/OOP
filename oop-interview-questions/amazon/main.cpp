@@ -1,7 +1,9 @@
+#include "./server/server.h"
 #include "./controller/controller.h"
 #include <iostream>
 
 signed main() {
-  Controller controller;
-  controller.run();
+  Server server;
+  Controller controller(server);
+  controller.welcomeBoard();
 }

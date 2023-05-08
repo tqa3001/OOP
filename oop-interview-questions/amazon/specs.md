@@ -42,13 +42,14 @@ Login -> User -> Item, Item, ... -> view cart -> remove item
           |------------------------------------------------------------------------------
 
 # Step 2: Identify objects & methods
-1. Item(name, price, counter)
+1. Item(name, price)
 2. Payment(Item item, counter, time)
 3. Cart(vector<Item> item)
 4. User(username, password, vector<Payment> history, Cart)
 5. PaymentProcessor(result: Payment)
 + makePayment(user, method)
 6. Controller
+7. Server
 
 UI: menu like 
 - view Item
