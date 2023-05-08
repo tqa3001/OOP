@@ -3,7 +3,9 @@
 # Approach
 - Summarize Amazon's core functionality
 - Identify Amazon's extra features that the interviewer might want me to design
-- Identify objects, objects' methods, relationship between objects. 
+- Identify objects, objects' methods, relationship between objects, paying attention to:
++ Inheritance vs composition
++ Where I can decouple things
 
 # Step 1: Core features
 - Authentication: login, logout, signup, edit
@@ -40,9 +42,17 @@ Login -> User -> Item, Item, ... -> view cart -> remove item
           |------------------------------------------------------------------------------
 
 # Step 2: Identify objects & methods
-0. UI: menu like 
-1. User
-- get, set, constructor for new user
-- 
-2. Item
-3. Cart
+1. Item(name, price, counter)
+2. Payment(Item item, counter, time)
+3. Cart(vector<Item> item)
+4. User(username, password, vector<Payment> history, Cart)
+5. PaymentProcessor(result: Payment)
++ makePayment(user, method)
+6. Controller
+
+UI: menu like 
+- view Item
+- view Cart
+- add Item to cart
+- remove Item from cart
+- make payment
