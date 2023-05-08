@@ -6,8 +6,10 @@ class Controller {
 public:
   Controller(Server& server);
   std::string getInput();
-  std::string hash(std::string);
+  size_t hash(std::string str);
+  void init();
   void login();
+  void signup();
   void run();
   void renderMenu();
 private:

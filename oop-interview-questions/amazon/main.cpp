@@ -5,5 +5,5 @@
 signed main() {
   Server server;
   Controller controller(server);
-  controller.welcomeBoard();
+  controller.init();
 }
