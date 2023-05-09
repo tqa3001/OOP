@@ -5,6 +5,14 @@
 
 Controller::Controller(Server &server) {
   mServer = server;
+  mServer.addItem(Item("Broom", "A based broom that is also very cheap I think", 5.6, 100));
+  mServer.addItem(Item("Kmart Dog", "Epic chihuahua for your mom!", 53, 20));
+  mServer.addItem(Item("College Degree", 
+    "From Goofstercum University.\n Class of 2025. Proudly given by Endrew Tute", 6900.545, 14));
+  mServer.addItem(Item("Kmart Cat", "El gato! Imported from Ohio ", 36, 22));
+  mServer.addItem(Item("Tim Tam", "Hood classic", 5.2, 200));
+  mServer.addItem(Item("Antidepressants", "Mood classic", 24.5, 70));
+  mServer.addItem(Item("KFC Chicken Combo", "Foot classic", 15.7, 50));
 }
 
 std::string Controller::getInput() {
@@ -14,15 +22,12 @@ std::string Controller::getInput() {
   return ret;
 }
 
-size_t Controller::hash(std::string str) {
-  return std::hash<std::string>{}(str);  /* Convenient but unsafe */
-}
-
 void Controller::init() {
   system("cls");
+  mServer.addUser(User("quanganh", mServer.hash("123")));
   while (true) {
     std::cout << "Welcome to Amazon Ripoff! Please login or signup to continue.\n";
-    std::cout << "Press a number ([1] for login, [2] for signup, [x] for exit): ";
+    std::cout << "Select option: [1] for login, [2] for signup, [x] for exit\n";
     std::string input = getInput();
     if (input == "1") {
       login();
@@ -42,7 +47,7 @@ void Controller::login() {
     std::cout << "Username not found. Please try again.\n";
   } else {
     std::cout << "User is found. Please enter your password: \n";
-    size_t hashed = hash(getInput());
+    size_t hashed = mServer.hash(getInput());
     if (user.getPassword() != hashed) {
       std::cout << "Incorrect password.\n";
     } else {
@@ -62,7 +67,7 @@ void Controller::signup() {
     std::cout << "Username already exists!\n";
   } else {
     std::cout << "Choose a password: ";
-    size_t hashedPassword = hash(getInput());
+    size_t hashedPassword = mServer.hash(getInput());
     user.setPassword(hashedPassword);
     mServer.addUser(user);
     std::cout << "New user created! Please login.\n";
@@ -70,7 +75,7 @@ void Controller::signup() {
 }
 
 void Controller::renderMenu() {
-  std::cout << "Welcome to Amazon ripoff!\n\n";
+  std::cout << "\n*** Welcome to Amazon ripoff! ***\n\n";
   std::cout <<
     "[0] - view items\n"
     "[1] - view cart\n"
@@ -79,9 +84,10 @@ void Controller::renderMenu() {
     "[4] - make payment\n"
     "[5] - view history\n"
     "[6] - log out\n";
-  std::cout << "Enter a number: ";
+  std::cout << "\nSelect a number: ";
 }
 
+/* Too long, needs refactoring */
 void Controller::run() {
   while (true) {
     std::cout << "Logged in as " << mUser.getUsername() << '\n';
@@ -92,9 +98,54 @@ void Controller::run() {
       break;
     }
     if (input == "0") {
-      continue;
+      int page = 0;
+      while (true) {
+        std::cout << 
+          "Showing 5 items at a time.\n"
+          "To navigate: [a] - previous page, [s] - next page\n"
+          "To add to cart, first enter item number.\n"
+          "To go back, enter [x].\n\n";
+        mServer.renderItems(page);
+        std::string input = getInput();
+        if (input == "a") {
+          page = std::max(0, page - 1);
+        } else if (input == "s") {
+          int maxPageCount = (mServer.numberOfItems() + 4) / 5;
+          page = std::min(maxPageCount - 1, page + 1);
+        } else if (input == "x") {
+          break;
+        } else {
+          try {
+            int pos = std::stoi(input);
+            if (pos >= 0 && pos < mServer.numberOfItems()) {
+              Item item = mServer.getItem(pos);
+              std::cout << "There are " + std::to_string(item.getCount()) + " <" + 
+                item.getName() + "> left.\n";
+              std::cout << "How many of this item do you want to add to cart?\n";
+              int quantity = std::stoi(getInput());
+              if (quantity > 0 && quantity <= item.getCount()) {
+                mUser.addToCart(item, quantity);
+                std::cout << "Added " << std::to_string(quantity) << " <" + item.getName() + "> to cart.\n";
+              } else {
+                std::cout << "Invalid quantity!\n";
+              }
+            } else {
+              throw std::exception();
+            }
+          } catch (const std::exception &e) {
+            /* Maybe std::cerr is better (output to error stream) */
+            /* Builtin exception classes: https://en.cppreference.com/w/cpp/error/exception */
+            std::cout << "Invalid input: " << e.what() << "\n\n";
+          }
+        }
+      }
     }
     if (input == "1") {
+      std::cout << "\nYour cart currently contains: \n";
+      mUser.getCart().renderCart();
+      std::cout << "\n[p] - Payment | [item number] - Remove item | [x] - Back\n";
+      std::cout << "Select option: ";
+      std::string input = getInput();
       continue;
     }
     if (input == "2") {

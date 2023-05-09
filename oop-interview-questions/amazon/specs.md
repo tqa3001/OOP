@@ -57,3 +57,7 @@ UI: menu like
 - add Item to cart
 - remove Item from cart
 - make payment
+
+TODO:
+- c++ webserver
+-> support concurrency how

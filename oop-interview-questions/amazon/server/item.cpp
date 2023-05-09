@@ -11,6 +11,8 @@ std::string Item::getDescription() const { return mDescription; }
 double Item::getPrice() const { return mPrice; }
 int Item::getCount() const { return mCount; }
 
+void Item::setCount(int count) { mCount = count; }
+
 void Item::render()  {
   std::cout << mName << '\n';
   std::cout << "Price: " << mPrice << '\n';

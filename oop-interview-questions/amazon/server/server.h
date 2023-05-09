@@ -5,11 +5,15 @@
 
 class Server {
 public:
-  Server();
+  Server() {}
+  size_t hash(std::string str);
   bool findItem(std::string itemName, Item& result);
   bool findUser(std::string userName, User& result);
-  void addItem(Item &item);
-  void addUser(User &user);
+  int numberOfItems();
+  void addItem(Item item);
+  void addUser(User user);
+  void renderItems(int page);
+  Item getItem(int position);
 private:
   std::vector<User> mUsers;
   std::vector<Item> mItems;

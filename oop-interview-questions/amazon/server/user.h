@@ -7,11 +7,13 @@
 class User {
 public:
   User() {}
+  User(std::string username, size_t hashedPassword);
   User(const User &oth);
   std::string getUsername() const;  /* Make this a const_ptr*/
   size_t getPassword() const;
   std::vector<Payment> getHistory() const;
   Cart getCart() const;
+  void addToCart(Item item, int quantity);
   void setUsername(std::string username);
   void setPassword(size_t hashedPassword);
 private:
