@@ -6,10 +6,14 @@
 
 class Cart {
 public:
+  void reset();
   double calculatePrice();
+  int numberOfItems();
   void addToCart(Item item, int quantity);
   void removeFromCart(int position);
-  void renderCart();
+  std::vector<Item> getCart();
+  std::vector<Item> renderCart();
+  ~Cart() {std::cout<<"bruh! who tf called me??!";}
 private:
   std::vector<Item> mBuyingList;
 };

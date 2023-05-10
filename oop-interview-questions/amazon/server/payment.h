@@ -1,12 +1,18 @@
 #pragma once
+#include "item.h"
 #include <iostream>
 #include <vector>
-#include "item.h"
 
 class Payment {
 public:
-  double render();
+  void timestamp();
+  Payment() { timestamp(); }
+  Payment(double price, std::vector<Item> items) :
+    mPrice(price), mItems(items) { timestamp(); }
+  void render();
+  std::vector<Item> getItems();
 private:
-  std::vector<Item> mItems;
+  std::string mTime;
   double mPrice;
+  std::vector<Item> mItems;
 };

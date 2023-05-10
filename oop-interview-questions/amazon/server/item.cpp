@@ -14,7 +14,7 @@ int Item::getCount() const { return mCount; }
 void Item::setCount(int count) { mCount = count; }
 
 void Item::render()  {
-  std::cout << mName << '\n';
+  std::cout << mName << " x" << mCount << '\n';
   std::cout << "Price: " << mPrice << '\n';
   std::cout << ">> " << mDescription << '\n';
 }
