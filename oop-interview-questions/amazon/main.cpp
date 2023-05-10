@@ -3,8 +3,7 @@
 #include <iostream>
 
 signed main() {
-  User guest;
   Server server;
-  Controller controller(server, guest);
+  Controller controller(server);
   controller.init();
 }

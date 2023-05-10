@@ -13,7 +13,6 @@ public:
   void removeFromCart(int position);
   std::vector<Item> getCart();
   std::vector<Item> renderCart();
-  ~Cart() {std::cout<<"bruh! who tf called me??!";}
 private:
   std::vector<Item> mBuyingList;
 };

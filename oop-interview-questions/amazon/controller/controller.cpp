@@ -3,7 +3,7 @@
 #include <string>
 #include <cassert>
 
-Controller::Controller(Server &server, User &guest) : mUser(guest) {
+Controller::Controller(Server &server) {
   mServer = server;
   /* Add items to database */
   mServer.addItem(Item("Broom", "A based broom that is also very cheap I think", 5.6, 100));
@@ -31,13 +31,8 @@ void Controller::init() {
   while (true) {
     std::cout << "Welcome to Amazon Ripoff! Please login or signup to continue.\n";
     std::cout << "Select option: [1] for login, [2] for signup, [x] for exit\n";
+    mUserPtr = nullptr;
     std::string input = getInput();
-    std::cout << "bruh! carts!\n";
-    for (auto& user : mServer.mUsers) {
-      std::cout << user.getUsername() << '\n';
-      user.getCart().renderCart();
-      std::cout << '\n';
-    }
     if (input == "1") {
       login();
     } else if (input == "2") {
@@ -51,17 +46,15 @@ void Controller::init() {
 
 void Controller::login() {
   std::cout << "Enter your username: ";
-  User* userPtr;
-  if (!mServer.findUser(getInput(), userPtr)) {
+  if (!mServer.findUser(getInput(), mUserPtr)) {
     std::cout << "Username not found. Please try again.\n";
   } else {
     std::cout << "User is found. Please enter your password: \n";
     size_t hashed = mServer.hash(getInput());
-    if (userPtr->getPassword() != hashed) {
+    if (mUserPtr->getPassword() != hashed) {
       std::cout << "Incorrect password.\n";
     } else {
       std::cout << "Login successful!\n\n";
-      mUser = *userPtr;
       run();
     }
   }
@@ -102,6 +95,7 @@ void Controller::renderMenu() {
   - Is code self-explanatory?
   - string for int, why? */
 void Controller::run() {
+  User& mUser = *mUserPtr;
   while (true) {
     std::cout << "Logged in as " << mUser.getUsername() << '\n';
     std::cout << "In-app cash: $" << mUser.getCash() << '\n';
@@ -112,7 +106,7 @@ void Controller::run() {
       break;
     }
     if (input == "0") {
-      listAllItems();
+      listAllItems(mUser);
     }
     if (input == "1") {
       std::cout << "\nYour cart currently contains: \n";
@@ -142,7 +136,7 @@ void Controller::run() {
           if (itemPos >= 0 && itemPos < mUser.getCart().numberOfItems()) {
             Item shopItem;
             assert(mServer.findItem(cartItem[itemPos].getName(), shopItem));
-            viewItem(shopItem);
+            viewItem(shopItem, mUser);
           } else {
             throw std::exception();
           }
@@ -176,7 +170,7 @@ void Controller::run() {
 }
 
 /* A viewer class or something -> for history as well. */
-void Controller::listAllItems() {
+void Controller::listAllItems(User& mUser) {
   int page = 0;
   while (true) {
     std::cout << 
@@ -198,7 +192,7 @@ void Controller::listAllItems() {
         int position = std::stoi(input);
         if (position >= 0 && position < mServer.numberOfItems()) {
           Item item = mServer.getItem(position); 
-          viewItem(item);
+          viewItem(item, mUser);
         } else {
           throw std::exception();
         }
@@ -211,7 +205,7 @@ void Controller::listAllItems() {
   }
 }
 
-void Controller::viewItem(Item item) {
+void Controller::viewItem(Item item, User& mUser) {
   std::cout << "There are " + std::to_string(item.getCount()) + " <" + 
     item.getName() + "> left.\n";
   std::cout << 

@@ -4,16 +4,16 @@
 
 class Controller {
 public:
-  Controller(Server& server, User &guest);
+  Controller(Server& server);
   std::string getInput();
   void init();
   void login();
   void signup();
   void renderMenu();
   void run();
-  void listAllItems();
-  void viewItem(Item viewItem);
+  void listAllItems(User& mUser);
+  void viewItem(Item viewItem, User& mUser);
 private:
-  User &mUser;
+  User* mUserPtr;
   Server mServer;
 };
