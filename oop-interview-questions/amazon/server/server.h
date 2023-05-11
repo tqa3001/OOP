@@ -17,8 +17,8 @@ public:
   void renderItems(int page);
   void process(Payment payment);
   Item getItem(int position);
-  std::vector<User> mUsers;
 private:
+  std::vector<User> mUsers;
   std::vector<Item> mItems;
   std::unordered_map<std::string, int> mUserHashMap;
   std::unordered_map<std::string, int> mItemHashMap;
